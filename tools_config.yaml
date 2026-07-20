@@ -1,0 +1,631 @@
+# ============================================================
+# Pentest Tools Configuration
+# Last verified: 2026-07-14
+# Run: source ~/.hermes/pentest_setup.sh to reload
+# ============================================================
+
+# Environment
+environment:
+  gopath: ~/go
+  path_additions:
+    - ~/go/bin
+  workspace: ~/pentest
+  wordlists: /usr/share/seclists
+
+# ============================================================
+# PHASE 1: RECONNAISSANCE
+# ============================================================
+recon:
+  # Subdomain Enumeration
+  subdomain:
+    subfinder:
+      path: /usr/bin/subfinder
+      version: v2.14.0
+      cmd: "subfinder -d {target} -all -o {output}"
+      description: Passive subdomain discovery
+      
+    amass:
+      path: /usr/bin/amass
+      cmd: "amass enum -d {target} -o {output}"
+      description: In-depth subdomain enumeration
+      
+    assetfinder:
+      path: /usr/bin/assetfinder
+      cmd: "assetfinder --subs-only {target} > {output}"
+      description: Find subdomains and assets
+      
+    findomain:
+      path: ~/go/bin/findomain
+      cmd: "findomain -t {target} -q > {output}"
+      description: Fast subdomain enumerator
+      
+    crtsh:
+      path: /usr/local/bin/crtsh
+      cmd: "crtsh {target} > {output}"
+      description: Certificate transparency logs
+
+  # DNS Enumeration
+  dns:
+    dnsx:
+      path: ~/go/bin/dnsx
+      cmd: "cat {input} | dnsx -silent -o {output}"
+      description: DNS probing and validation
+      
+    dnsrecon:
+      path: /usr/bin/dnsrecon
+      cmd: "dnsrecon -d {target} -j {output}"
+      description: DNS enumeration script
+      
+    dnsenum:
+      path: /usr/bin/dnsenum
+      cmd: "dnsenum {target}"
+      description: DNS enumeration tool
+      
+    fierce:
+      path: /usr/bin/fierce
+      cmd: "fierce --domain {target}"
+      description: DNS reconnaissance tool
+      
+    dig:
+      path: /usr/bin/dig
+      cmd: "dig {target} ANY +noall +answer"
+      description: DNS lookup utility
+
+  # HTTP Probing & Fingerprinting
+  probing:
+    httpx:
+      path: ~/go/bin/httpx
+      cmd: "cat {input} | httpx -silent -sc -cl -title -td -o {output}"
+      description: Fast HTTP probing with tech detection
+      
+    httprobe:
+      path: ~/go/bin/httprobe
+      cmd: "cat {input} | httprobe > {output}"
+      description: Probe for working HTTP/HTTPS servers
+      
+    whatweb:
+      path: /usr/bin/whatweb
+      cmd: "whatweb {target} -v"
+      description: Web technology fingerprinting
+      
+    wafw00f:
+      path: /usr/bin/wafw00f
+      cmd: "wafw00f {target}"
+      description: WAF detection tool
+
+  # OSINT & Information Gathering
+  osint:
+    theHarvester:
+      path: /usr/bin/theHarvester
+      cmd: "theHarvester -d {target} -b google,bing,linkedin,crtsh -l 500"
+      description: Email and subdomain harvesting
+      
+    recon-ng:
+      path: /usr/bin/recon-ng
+      description: Web reconnaissance framework
+      
+    spiderfoot:
+      path: /usr/bin/spiderfoot
+      description: OSINT automation tool
+      
+    shodan:
+      path: pip3 (pyShodan 1.31.0)
+      cmd: "shodan host {target}"
+      description: Shodan search engine
+      
+    censys:
+      path: pip3 (censys 2.2.19)
+      cmd: "censys search {target}"
+      description: Censys search engine
+
+  # URL & Parameter Discovery
+  url_discovery:
+    gau:
+      path: ~/go/bin/gau
+      cmd: "cat {input} | gau --threads 5 > {output}"
+      description: Fetch known URLs from AlienVault, Wayback, Common Crawl
+      
+    waybackurls:
+      path: ~/go/bin/waybackurls
+      cmd: "cat {input} | waybackurls > {output}"
+      description: Fetch URLs from Wayback Machine
+      
+    katana:
+      path: ~/go/bin/katana
+      cmd: "katana -list {input} -d 3 -jc -kf -o {output}"
+      description: Next-generation web crawling
+      
+    hakrawler:
+      path: ~/go/bin/hakrawler
+      cmd: "cat {input} | hakrawler -d 3 -subs > {output}"
+      description: Fast web crawler
+      
+    paramspider:
+      path: /usr/local/bin/paramspider
+      cmd: "paramspider -d {target} -o {output}"
+      description: Mine parameters from web archives
+      
+    arjun:
+      path: /usr/local/bin/arjun
+      cmd: "arjun -u {target} -o {output}"
+      description: HTTP parameter discovery
+      
+    qsreplace:
+      path: ~/go/bin/qsreplace
+      cmd: "cat {input} | qsreplace '{payload}' | {next_tool}"
+      description: Replace query string values
+      
+    unfurl:
+      path: ~/go/bin/unfurl
+      cmd: "cat {input} | unfurl -u domains | sort -u"
+      description: Format and decompose URLs
+
+  # Utility & Helper
+  utility:
+    gf:
+      path: ~/go/bin/gf
+      patterns: ~/.gf/*.json (37 patterns)
+      cmd: "cat {input} | gf {pattern} > {output}"
+      description: Pattern matching for vulnerability types
+      patterns_list:
+        - xss
+        - sqli
+        - ssrf
+        - lfi
+        - idor
+        - redirect
+        - rce
+        - ssti
+        - cors
+        - s3-buckets
+        - upload-fields
+        - debug-pages
+        - interestingparams
+        - interestingsubs
+        
+    anew:
+      path: ~/go/bin/anew
+      cmd: "cat {input} | anew {output}"
+      description: Append lines only if not exist
+      
+    cewl:
+      path: /usr/bin/cewl
+      cmd: "cewl {target} -w {output}"
+      description: Custom wordlist generator
+      
+    cutycapt:
+      path: /usr/bin/cutycapt
+      cmd: "cutycapt --url={target} --out={output}"
+      description: Screenshot capture
+
+  # Subdomain Takeover
+  takeover:
+    subjack:
+      path: /usr/bin/subjack
+      cmd: "subjack -w {input} -t 100 -timeout 30 -o {output}"
+      description: Subdomain takeover scanner
+      
+    subzy:
+      path: ~/go/bin/subzy
+      version: v1.2.0
+      cmd: "subzy run --targets {input}"
+      description: Subdomain takeover vulnerability scanner
+
+# ============================================================
+# PHASE 2: SCANNING & ENUMERATION
+# ============================================================
+scanning:
+  # Port & Service Discovery
+  port_scanning:
+    nmap:
+      path: /usr/bin/nmap
+      version: 7.99
+      scripts: 613 scripts
+      cmd: "nmap -sV -sC -oN {output} {target}"
+      description: Network scanner and service detection
+      
+    masscan:
+      path: /usr/bin/masscan
+      cmd: "masscan -iL {input} -p0-65535 --rate=1000 -oG {output}"
+      description: Fast port scanner
+      
+    naabu:
+      path: ~/go/bin/naabu
+      cmd: "naabu -list {input} -ports 80,443,8080,8443 -o {output}"
+      description: Fast port scanner written in Go
+
+  # Web Vulnerability Scanning
+  vuln_scanning:
+    nuclei:
+      path: /usr/bin/nuclei
+      version: v3.10.0
+      templates: ~/.local/nuclei-templates/ (13,320 templates)
+      config: ~/.config/nuclei/config.yaml
+      cmd: "nuclei -l {input} -severity critical,high -o {output}"
+      description: Fast template-based vulnerability scanner
+      
+    nikto:
+      path: /usr/bin/nikto
+      version: 2.6.0
+      cmd: "nikto -h {target} -o {output}"
+      description: Web server vulnerability scanner
+
+  # Directory & Content Discovery
+  directory_discovery:
+    feroxbuster:
+      path: /usr/bin/feroxbuster
+      cmd: "feroxbuster -u {target} -w {wordlist} -o {output}"
+      description: Fast recursive content discovery
+      
+    gobuster:
+      path: /usr/bin/gobuster
+      cmd: "gobuster dir -u {target} -w {wordlist} -x php,asp,jsp -o {output}"
+      description: Directory, DNS, and VHost brute-forcing
+      
+    dirsearch:
+      path: /usr/bin/dirsearch
+      cmd: "dirsearch -u {target} -e php,asp,aspx,jsp -o {output}"
+      description: Advanced web path scanner
+      
+    ffuf:
+      path: /usr/bin/ffuf
+      version: 2.1.0-dev
+      cmd: "ffuf -u {target}/FUZZ -w {wordlist} -mc 200,301,302,403 -o {output} -of json"
+      description: Fast web fuzzer
+      
+    wfuzz:
+      path: /usr/bin/wfuzz
+      cmd: "wfuzz -c -z file,{wordlist} {target}/FUZZ"
+      description: Web application fuzzer
+      
+    dirb:
+      path: /usr/bin/dirb
+      cmd: "dirb {target} {wordlist}"
+      description: URL-based directory brute-forcer
+
+  # SSL/TLS Analysis
+  ssl_tls:
+    sslyze:
+      path: /usr/bin/sslyze
+      cmd: "sslyze {target}"
+      description: SSL/TLS configuration analyzer
+      
+    sslscan:
+      path: /usr/bin/sslscan
+      cmd: "sslscan {target}"
+      description: SSL/TLS scanner
+      
+    testssl:
+      path: ~/tools/testssl.sh/testssl.sh
+      cmd: "~/tools/testssl.sh/testssl.sh {target}"
+      description: SSL/TLS testing tool
+
+  # CMS Detection
+  cms:
+    wpscan:
+      path: /usr/bin/wpscan
+      cmd: "wpscan --url {target} --enumerate ap,at,u -o {output}"
+      description: WordPress vulnerability scanner
+
+  # WebDAV
+  webdav:
+    cadaver:
+      path: /usr/bin/cadaver
+      description: WebDAV client
+      
+    davtest:
+      path: /usr/bin/davtest
+      description: WebDAV testing tool
+
+# ============================================================
+# PHASE 3: EXPLOITATION
+# ============================================================
+exploitation:
+  # SQL Injection
+  sqli:
+    sqlmap:
+      path: /usr/bin/sqlmap
+      version: 1.10.6#stable
+      cmd: "sqlmap -u '{target}' --batch --level=3 --risk=2 -o {output}"
+      description: SQL injection automation tool
+
+  # XSS
+  xss:
+    dalfox:
+      path: ~/go/bin/dalfox
+      cmd: "dalfox url '{target}' -o {output}"
+      description: Parameter analysis and XSS scanner
+      
+    xsstrike:
+      path: /usr/bin/xsstrike
+      cmd: "xsstrike -u '{target}'"
+      description: XSS detection and exploitation
+
+  # SSTI
+  ssti:
+    sstimap:
+      path: /usr/bin/sstimap
+      cmd: "sstimap -u '{target}'"
+      description: SSTI detection and exploitation
+
+  # Command Injection
+  cmdi:
+    commix:
+      path: /usr/bin/commix
+      version: v4.1
+      cmd: "commix -u '{target}'"
+      description: Command injection exploitation tool
+
+  # JWT Attacks
+  jwt:
+    jwt_tool:
+      path: ~/tools/jwt_tool/jwt_tool.py
+      cmd: "python3 ~/tools/jwt_tool/jwt_tool.py {token} -M at"
+      description: JWT testing and exploitation
+      
+    pyjwt:
+      path: pip3 (PyJWT 2.13.0)
+      description: JWT encoding/decoding library
+
+  # WAF Bypass
+  waf_bypass:
+    waf-bypass:
+      path: ~/tools/waf-bypass-payloads/
+      files: 61 files
+      description: WAF bypass payload collection
+
+  # Brute Force & Auth
+  brute_force:
+    hydra:
+      path: /usr/bin/hydra
+      version: v9.7
+      cmd: "hydra -l {user} -P {wordlist} {target} {service}"
+      description: Network logon cracker
+      
+    medusa:
+      path: /usr/bin/medusa
+      description: Parallel login brute-forcer
+      
+    patator:
+      path: /usr/bin/patator
+      description: Multi-purpose brute-forcer
+
+  # Password Cracking
+  password_cracking:
+    john:
+      path: /usr/sbin/john
+      description: Password cracker
+      
+    hashcat:
+      path: /usr/bin/hashcat
+      description: Advanced password recovery
+      
+    crunch:
+      path: /usr/bin/crunch
+      description: Wordlist generator
+      
+    hashcat-utils:
+      path: /usr/share/hashcat-utils/
+      description: Hashcat utilities
+
+  # Frameworks & Proxy
+  frameworks:
+    msfconsole:
+      path: /usr/bin/msfconsole
+      version: v6.4.135-dev
+      description: Metasploit framework
+      
+    msfvenom:
+      path: /usr/bin/msfvenom
+      description: Metasploit payload generator
+      
+    searchsploit:
+      path: /usr/bin/searchsploit
+      description: Exploit database search
+      
+    burpsuite:
+      path: /usr/bin/burpsuite
+      description: Web application security testing proxy
+      
+    zaproxy:
+      path: /usr/bin/zaproxy
+      description: OWASP ZAP intercepting proxy
+
+  # Network Interception
+  interception:
+    mitmproxy:
+      path: /usr/bin/mitmproxy
+      description: Interactive HTTPS proxy
+      
+    wireshark:
+      path: /usr/bin/wireshark
+      description: Network protocol analyzer
+
+# ============================================================
+# PHASE 4: POST-EXPLOITATION
+# ============================================================
+post_exploitation:
+  socat:
+    path: /usr/bin/socat
+    description: Multipurpose relay tool
+    
+  netcat:
+    path: /usr/bin/nc
+    description: Network utility (nc)
+    
+  evil-winrm:
+    path: /usr/bin/evil-winrm
+    description: WinRM shell for Windows
+    
+  proxychains:
+    path: /usr/bin/proxychains
+    description: Force TCP connections through proxy
+    
+  responder:
+    path: /usr/sbin/responder
+    description: LLMNR/NBT-NS/MDNS poisoner
+    
+  impacket:
+    scripts: 61 scripts
+    description: Python collection for pentesting
+    
+  enum4linux:
+    path: /usr/bin/enum4linux
+    description: Samba enumeration tool
+    
+  smbclient:
+    path: /usr/bin/smbclient
+    description: SMB/CIFS client
+    
+  tor:
+    path: /usr/sbin/tor
+    description: Anonymity network
+    
+  tcpdump:
+    path: /usr/bin/tcpdump
+    description: Network packet analyzer
+
+# ============================================================
+# WORDLISTS
+# ============================================================
+wordlists:
+  base_path: /usr/share/seclists
+  
+  common:
+    web_dirs: /usr/share/seclists/Discovery/Web-Content/common.txt
+    medium_dirs: /usr/share/seclists/Discovery/Web-Content/DirBuster-2007_directory-list-2.3-medium.txt
+    api_endpoints: /usr/share/seclists/Discovery/Web-Content/common-api-endpoints-mazen160.txt
+    dns_subdomains: /usr/share/seclists/Discovery/DNS/subdomains-top1million-5000.txt
+    parameters: /usr/share/seclists/Discovery/Web-Content/burp-parameter-names.txt
+    
+  fuzzing:
+    xss: /usr/share/seclists/Fuzzing/XSS/
+    sqli: /usr/share/seclists/Fuzzing/Databases/SQLi/
+    lfi: /usr/share/seclists/Fuzzing/LFI/
+    cmdi: /usr/share/seclists/Fuzzing/command-injection-commix.txt
+    
+  credentials:
+    passwords: /usr/share/seclists/Passwords/
+    usernames: /usr/share/seclists/Usernames/
+
+# ============================================================
+# WORKSPACE STRUCTURE
+# ============================================================
+workspace:
+  base: ~/pentest
+  directories:
+    - recon
+    - scanning
+    - exploitation
+    - reports
+    - wordlists
+    - scripts
+
+# ============================================================
+# CONFIGURATION FILES
+# ============================================================
+configs:
+  gf_patterns:
+    path: ~/.gf/
+    count: 37 patterns
+    patterns:
+      - xss
+      - sqli
+      - ssrf
+      - lfi
+      - idor
+      - redirect
+      - rce
+      - ssti
+      - cors
+      - s3-buckets
+      - upload-fields
+      - debug-pages
+      - interestingparams
+      - interestingsubs
+      
+  nuclei:
+    config: ~/.config/nuclei/config.yaml
+    templates: ~/.local/nuclei-templates/
+    template_count: 13,320
+    
+  seclists:
+    path: /usr/share/seclists/
+    categories: 9
+
+# ============================================================
+# CYBER RAG LLM INTEGRATION
+# ============================================================
+cyber_rag:
+  # Location
+  base_dir: ~/Documents/Cyber_RAG_LLM
+  venv: ~/Documents/Cyber_RAG_LLM/venv
+  
+  # MCP Server
+  mcp_server:
+    host: 127.0.0.1
+    port: 8642
+    url: http://127.0.0.1:8642/sse
+    health: http://127.0.0.1:8642/health
+    config: ~/.hermes/config.yaml (mcp_servers.cyber_rag)
+    
+  # Ollama (Local LLM)
+  ollama:
+    host: http://localhost:11434
+    embedding_model: nomic-embed-text
+    llm_model: nemotron-3-nano:4b
+    
+  # Vector Database
+  vector_db:
+    path: ~/Documents/Cyber_RAG_LLM/vector_storage/cyber_rag.db
+    type: LanceDB
+    
+  # Knowledge Base
+  knowledge_base:
+    path: ~/Documents/Cyber_RAG_LLM/data/docs/
+    documents: 45+ cybersecurity documents
+    includes:
+      - OWASP Testing Guide v4
+      - OWASP Top 10
+      - OWASP ASVS
+      - Web Security Testing Guide (WSTG) v4.1
+      - Web Application Hacker's Handbook
+      - Red Team Field Manual (RTFM)
+      - CISSP Study Guide
+      - CIS Controls
+      - Penetration Testing guides
+      - Malware Analysis guides
+      - Network Forensics
+      - Cloud Security (AWS, Azure)
+      
+  # MCP Tools Available
+  tools:
+    cyber_rag_query:
+      description: Query the cybersecurity knowledge base
+      usage: "Query about vulnerabilities, exploits, security best practices, CVE/CWE analysis"
+      
+    analyze_recon_output:
+      description: Analyze reconnaissance tool output
+      usage: "Pass raw output from nmap, subfinder, whatweb, httpx, ffuf"
+      
+    analyze_vuln_scan:
+      description: Analyze vulnerability scanner output
+      usage: "Pass raw output from nuclei, nikto, wpscan, dalfox, sqlmap"
+      
+    pentest_recommend:
+      description: Get next-step recommendations
+      usage: "Specify current phase and findings summary"
+      
+    exploit_guidance:
+      description: Get exploitation guidance
+      usage: "Specify vulnerability type, endpoint, and WAF status"
+      
+    cvss_scoring:
+      description: Get CVSS v3.1 assessment
+      usage: "Describe the vulnerability for scoring"
+      
+  # Integration Scripts
+  scripts:
+    start_server: ~/Skills/Pentest/scripts/start_cyber_rag.sh
+    cli_helper: ~/Skills/Pentest/scripts/cyber_rag_cli.py
+    verify_tools: ~/Skills/Pentest/scripts/verify_tools.py

@@ -1,0 +1,7 @@
+{
+  "id": "pentest-master",
+  "name": "Pentest Master (Consolidated)",
+  "description": "Comprehensive penetration testing suite combining webapp, bugbounty, godmode, and recon workflows. Orchestrated via python & crewAI.",
+  "category": "red-teaming",
+  "version": "1.1.0"
+}
