@@ -83,3 +83,6 @@ env/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Pentest scan results
+results/

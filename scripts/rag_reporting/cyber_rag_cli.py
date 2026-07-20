@@ -1,4 +1,4 @@
-#!/home/ardnord/Documents/Cyber_RAG_LLM/venv/bin/python3
+#!/usr/bin/env python3
 """
 Cyber RAG CLI Helper — Quick access to cybersecurity knowledge base
 Usage: python3 ~/Skills/Pentest/scripts/cyber_rag_cli.py [command] [args]

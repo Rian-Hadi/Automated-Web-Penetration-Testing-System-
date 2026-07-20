@@ -2,7 +2,9 @@ import os
 import glob
 import re
 
-KNOWLEDGE_DIR = "/home/ardnord/.hermes/skills/red-teaming/pentest-automation/merged_knowledge"
+SCRIPTS_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PROJECT_DIR = os.path.dirname(SCRIPTS_DIR)
+KNOWLEDGE_DIR = os.path.join(PROJECT_DIR, "merged_knowledge")
 
 def read_files(pattern):
     content = []
