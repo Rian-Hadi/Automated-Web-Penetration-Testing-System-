@@ -3,7 +3,7 @@
 Sistem Pengujian Penetrasi Web Multi-Agen berbasis **CrewAI** yang mengintegrasikan berbagai alat keamanan siber profesional untuk mengotomatiskan siklus hidup pentest secara sequential (berurutan) dari perencanaan hingga pembuatan laporan.
 
 ---
-
+ 
 ## Arsitektur & Teknologi Utama
 Sistem ini dibangun dengan stack teknologi modern:
 1. **Core Orchestration**: Python 3 & **CrewAI** framework (Sequential Process).
