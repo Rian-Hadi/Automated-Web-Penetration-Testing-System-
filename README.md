@@ -13,7 +13,7 @@ Sistem ini dibangun dengan stack teknologi modern:
 
 ---
 
-## ⚡ 5 Fase Pentest, Agen, dan Alat (Tools)
+## 5 Fase Pentest, Agen, dan Alat (Tools)
 
 Sistem ini menjalankan alur kerja sequential di mana output dari satu fase otomatis menjadi konteks masukan untuk fase berikutnya.
 
